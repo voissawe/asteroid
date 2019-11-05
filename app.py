@@ -83,8 +83,7 @@ def get_value():
 
 # -------------------------
 #  Get All Data
-#  - Return everything from database. This method also includes the database password record.
-#  - Because of above reason, you need to set a password before using this feature.
+#  - Return everything from database. This method doesn't include password record tag and value.
 # -------------------------
 @app.route('/auth/data', methods=['POST'])
 def get_data():
@@ -99,15 +98,16 @@ def get_data():
         taglist = []
         valuelist = []
         for tg in tags:
-           taglist.append(tg.tag)
-           valuelist.append(tg.value)
+           if tg.tag != 'dbpass':
+              taglist.append(tg.tag)
+              valuelist.append(tg.value)
         return jsonify(['DATA', taglist, valuelist])
     return jsonify(['ERROR','You need to set a password first to use this feature!'])
 
 
 # -------------------------
 #  Get All Tags
-#  - Return all tags from database, removes the database password record for security.
+#  - Return all tags from database. This method doesn't include password record tag.
 # -------------------------
 @app.route('/getall', methods=['POST'])
 def get_all():
