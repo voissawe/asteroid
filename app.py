@@ -38,13 +38,13 @@ def store_a_value():
     getpassword = TinyWebDB.query.filter_by(tag='dbpass').first()
     if tag:
         if tag == 'dbpass':
-            return jsonify(['ERROR','Not possible to do any action to password record!'])
+            return jsonify(action="ERROR",error="Not possible to do any action to password record!")
         else:
             # --------------------
             if getpassword:
                 password = request.form['pass']
                 if password != getpassword.value:
-                    return jsonify(['ERROR','Wrong password!'])
+                    return jsonify(action="ERROR",error="Wrong password!")
             # --------------------
             existing_tag = TinyWebDB.query.filter_by(tag=tag).first()
             if existing_tag:
@@ -54,8 +54,8 @@ def store_a_value():
                 data = TinyWebDB(tag=tag, value=value)
                 db.session.add(data)
                 db.session.commit()
-        return jsonify(['STORED', tag, value])
-    return jsonify(['ERROR','Not found the tag.'])
+        return jsonify(action="STORED", tag=tag, value=value)
+    return jsonify(action="ERROR", error="Not found the tag.")
 
 
 # -------------------------
@@ -68,17 +68,17 @@ def get_value():
     getpassword = TinyWebDB.query.filter_by(tag='dbpass').first()
     if tag:
         if tag == 'dbpass':
-            return jsonify(['ERROR','Not possible to do any action to password record!'])
+            return jsonify(action="ERROR", error="Not possible to do any action to password record!")
         else:
             # --------------------
             if getpassword:
                 password = request.form['pass']
                 if password != getpassword.value:
-                    return jsonify(['ERROR','Wrong password!'])
+                    return jsonify(action="ERROR",error="Wrong password!")
             # --------------------
             value = TinyWebDB.query.filter_by(tag=tag).first().value
-            return jsonify(['GOT', tag, value])
-    return jsonify(['ERROR','Not found the tag.'])
+            return jsonify(action="GOT", tag=tag, value=value)
+    return jsonify(action="ERROR",error="Not found the tag.")
 
 
 # -------------------------
@@ -92,7 +92,7 @@ def get_data():
         # --------------------
         password = request.form['pass']
         if password != getpassword.value:
-            return jsonify(['ERROR','Wrong password!'])
+            return jsonify(action="ERROR",error="Wrong password!")
         # --------------------
         tags = TinyWebDB.query.all()
         taglist = []
@@ -101,8 +101,8 @@ def get_data():
            if tg.tag != 'dbpass':
               taglist.append(tg.tag)
               valuelist.append(tg.value)
-        return jsonify(['DATA', taglist, valuelist])
-    return jsonify(['ERROR','You need to set a password first to use this feature!'])
+        return jsonify(action="DATA", tag=taglist, value=valuelist)
+    return jsonify(action="ERROR",error="You need to set a password first to use this feature!")
 
 
 # -------------------------
@@ -116,7 +116,7 @@ def get_all():
         # --------------------
         password = request.form['pass']
         if password != getpassword.value:
-            return jsonify(['ERROR','Wrong password!'])
+            return jsonify(action="ERROR",error="Wrong password!")
         # --------------------
     tags = TinyWebDB.query.all()
     taglist = []
@@ -126,7 +126,7 @@ def get_all():
     # Nobody wants to get the tag of that record, right?
     if 'dbpass' in tags:
         taglist.remove('dbpass')
-    return jsonify(['TAGS', taglist])
+    return jsonify(action="TAGS", tag=taglist)
 
 
 # -------------------------
@@ -139,19 +139,19 @@ def delete_entry():
     getpassword = TinyWebDB.query.filter_by(tag='dbpass').first()
     if tag:
         if tag == 'dbpass':
-            return jsonify(['ERROR','Not possible to do any action to password record!'])
+            return jsonify(action="ERROR", error="Not possible to do any action to password record!")
         else:
             # --------------------
             if getpassword:
                 password = request.form['pass']
                 if password != getpassword.value:
-                    return jsonify(['ERROR','Wrong password!'])
+                    return jsonify(action="ERROR",error="Wrong password!")
             # --------------------
             deleted = TinyWebDB.query.filter_by(tag=tag).first()
             db.session.delete(deleted)
             db.session.commit()
-            return jsonify(['DELETED', tag])
-    return jsonify(['ERROR','Not found the tag.'])
+            return jsonify(action="DELETED", tag=tag)
+    return jsonify(action="ERROR",error="Not found the tag.")
 
 
 # -------------------------
@@ -165,15 +165,15 @@ def delete_all():
         # --------------------
         password = request.form['pass']
         if password != getpassword.value:
-            return jsonify(['ERROR','Wrong password!'])
+            return jsonify(action="ERROR",error="Wrong password!")
         # --------------------
     try:
         count = db.session.query(TinyWebDB).delete()
         db.session.commit()
-        return jsonify(['FORMATTED', count])
+        return jsonify(action="FORMATTED", count=count)
     except:
         db.session.rollback()
-        return jsonify(['ERROR', 'Something went wrong while performing this action.'])
+        return jsonify(action="ERROR",error="Something went wrong while performing this action.")
     
 
 
@@ -193,15 +193,15 @@ def set_key():
             if getpassword.value == oldpassword:
                 getpassword.value = newpassword
                 db.session.commit()
-                return jsonify(['CHANGED PASSWORD', newpassword])
+                return jsonify(action="CHANGED PASSWORD", newpassword=newpassword)
             else:
-                return jsonify(['ERROR','Wrong old password!'])
+                return jsonify(action="ERROR",error="Wrong old password!")
         else:
             data = TinyWebDB(tag='dbpass', value=newpassword)
             db.session.add(data)
             db.session.commit()
-            return jsonify(['SET PASSWORD', newpassword])
-    return jsonify(['ERROR','No new password is specified!'])
+            return jsonify(action="SET PASSWORD", newpassword=newpassword)
+    return jsonify(action="ERROR",error="No new password is specified!")
 
 
 # -------------------------
@@ -217,10 +217,10 @@ def remove_key():
             deleted = TinyWebDB.query.filter_by(tag='dbpass').first()
             db.session.delete(deleted)
             db.session.commit()
-            return jsonify(['DELETED PASSWORD', password])
+            return jsonify(action="DELETED PASSWORD", password=password)
         else:
-            return jsonify(['ERROR','Wrong password!'])
-    return jsonify(['ERROR','You need to set a password first to use this feature!'])
+            return jsonify(action="ERROR",error="Wrong password!")
+    return jsonify(action="ERROR",error="You need to set a password first to use this feature!")
 
 
 # -------------------------
@@ -234,9 +234,9 @@ def is_true():
     if getpassword:
         # --------------------
         if password != getpassword.value:
-            return jsonify(['IS CORRECT','false'])
+            return jsonify(action="IS CORRECT",result="false")
         # --------------------
-    return jsonify(['IS CORRECT','true'])
+    return jsonify(action="IS CORRECT",result="true")
         
 
 # -------------------------
@@ -248,7 +248,7 @@ def is_true():
 def count_all():
     tags = TinyWebDB.query.all()
     resl = len(tags)
-    return jsonify(['COUNT', resl])
+    return jsonify(action="COUNT", count=resl)
 
 
 # -------------------------
@@ -259,9 +259,9 @@ def count_all():
 def is_locked():
     getpassword = TinyWebDB.query.filter_by(tag='dbpass').first()
     if getpassword:
-        return jsonify(['IS LOCKED', 'true'])
+        return jsonify(action="IS LOCKED",result="true")
     else:
-        return jsonify(['IS LOCKED', 'false'])
+        return jsonify(action="IS LOCKED",result="false")
         
 
 if __name__ == '__main__':
