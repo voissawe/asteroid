@@ -4,7 +4,7 @@
 
 Why people just can't set up a simple and free database for apps/softwares? They are actually just saving values and getting the values by using the tags. So there is no reason to providing an almost impossible solution for creating online database. We are in 2019. 
 
-So welcome to a new generation in database service. If you want a too simple database which only holds string values, then AsteroidDB is for you. It is based on TinyWebDB (Python version) which is an MIT App Inventor component, and **can be accessed with HTTP requests, this makes AsteroidDB can work inalmost every programming language! **
+So welcome to a new generation in database service. If you want a too simple database which only holds string values, then AsteroidDB is for you. It is based on TinyWebDB (Python version) which is an MIT App Inventor component, and **can be accessed with HTTP requests, this makes AsteroidDB can work inalmost every programming language!**
 
 It can be installed on [Heroku](https://www.heroku.com/) with one click, if you don't want to deal with setting up thing (as I did). AsteroidDB is using [Flask](http://flask.pocoo.org/) micro-framework and written in Python, so you can understand that how it is easy to improve the code.
 
