@@ -4,7 +4,7 @@
 
 Why people just can't set up a simple and free database for apps/softwares? They are actually just saving values and getting the values by using the tags. So there is no reason to providing an almost impossible solution for creating online database. We are in 2019. 
 
-So welcome to a new generation in database service. If you want a too simple database which only holds string values, then AsteroidDB is for you. It is based on TinyWebDB (Python version) which is an MIT App Inventor component, but with more features.
+So welcome to a new generation in database service. If you want a too simple database which only holds string values, then AsteroidDB is for you. It is based on TinyWebDB (Python version) which is an MIT App Inventor component, and **can be accessed with HTTP requests, this makes AsteroidDB can work inalmost every programming language! **
 
 It can be installed on [Heroku](https://www.heroku.com/) with one click, if you don't want to deal with setting up thing (as I did). AsteroidDB is using [Flask](http://flask.pocoo.org/) micro-framework and written in Python, so you can understand that how it is easy to improve the code.
 
@@ -14,31 +14,7 @@ It can be installed on [Heroku](https://www.heroku.com/) with one click, if you 
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/ysfchn/AsteroidDB)
 
-## Progress
-Every checkmark presents a method. A checked box means that method is implemented. You can a detailed table about all methods in [this Wiki page](https://github.com/ysfchn/AsteroidDB/wiki#current-methods).
-
-### Methods
-- **Store**
-   - [x] `Store`
-- **Get**
-   - [x] `GetValue`
-   - [x] `GetAll`
-   - [x] `GetAllData` *(which contains all tags alongs with values)*
-- **Authorization**
-   - [x] `Password`
-   - [x] `DeletePassword`
-- **Informational**
-   - [x] `IsLocked` *(returns true if database is locked, otherwise false)*
-   - [x] `IsTrue` *(returns true if password is correct)*
-- **Delete**
-   - [x] `Delete`
-   - [x] `Format` *(factory state of database; deletes everything)*
-
-### Others
-- **Integrations**
-   - [ ] App Inventor Extension
-- **Dashboard**
-   - [ ] AsteroidDB Web Dashboard *(for editing database online)* -- coming soon
+[Current available methods](https://github.com/ysfchn/AsteroidDB/wiki#current-methods)
 
 ***
 
