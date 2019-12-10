@@ -121,11 +121,8 @@ def get_all():
     tags = TinyWebDB.query.all()
     taglist = []
     for tg in tags:
-        taglist.append(tg.tag)
-    # Delete the dbpass tag from result because that record contains the password of database. 
-    # Nobody wants to get the tag of that record, right?
-    if 'dbpass' in tags:
-        taglist.remove('dbpass')
+    	if tg.tag != 'dbpass': 
+            taglist.append(tg.tag)
     return jsonify(action="TAGS", tag=taglist)
 
 
@@ -234,9 +231,9 @@ def is_true():
     if getpassword:
         # --------------------
         if password != getpassword.value:
-            return jsonify(action="IS CORRECT",result="false")
+            return jsonify(action="IS CORRECT",result=false)
         # --------------------
-    return jsonify(action="IS CORRECT",result="true")
+    return jsonify(action="IS CORRECT",result=true)
         
 
 # -------------------------
@@ -259,9 +256,9 @@ def count_all():
 def is_locked():
     getpassword = TinyWebDB.query.filter_by(tag='dbpass').first()
     if getpassword:
-        return jsonify(action="IS LOCKED",result="true")
+        return jsonify(action="IS LOCKED",result=true)
     else:
-        return jsonify(action="IS LOCKED",result="false")
+        return jsonify(action="IS LOCKED",result=false)
         
 
 if __name__ == '__main__':
