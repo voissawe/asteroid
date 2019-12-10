@@ -190,14 +190,14 @@ def set_key():
             if getpassword.value == oldpassword:
                 getpassword.value = newpassword
                 db.session.commit()
-                return jsonify(action="CHANGED PASSWORD", newpassword=newpassword)
+                return jsonify(action="CHANGED PASSWORD", oldpassword=oldpassword, newpassword=newpassword)
             else:
                 return jsonify(action="ERROR",error="Wrong old password!")
         else:
             data = TinyWebDB(tag='dbpass', value=newpassword)
             db.session.add(data)
             db.session.commit()
-            return jsonify(action="SET PASSWORD", newpassword=newpassword)
+            return jsonify(action="SET PASSWORD", oldpassword=oldpassword, newpassword=newpassword)
     return jsonify(action="ERROR",error="No new password is specified!")
 
 
@@ -239,12 +239,14 @@ def is_true():
 # -------------------------
 #  Count All Records
 #  - Returns a number that tells you how many records there are in database. 
-#  - Decrease the number with 1 if you do not want the dbpass record to be included.
 # -------------------------
 @app.route('/count')
 def count_all():
     tags = TinyWebDB.query.all()
+    getpassword = TinyWebDB.query.filter_by(tag='dbpass').first()
     resl = len(tags)
+    if getpassword:
+    	resl = resl - 1
     return jsonify(action="COUNT", count=resl)
 
 
