@@ -97,11 +97,11 @@ def get_data():
         tags = TinyWebDB.query.all()
         taglist = []
         valuelist = []
+        datalist = []
         for tg in tags:
-           if tg.tag != 'dbpass':
-              taglist.append(tg.tag)
-              valuelist.append(tg.value)
-        return jsonify(action="DATA", tag=taglist, value=valuelist)
+            if tg.tag != 'dbpass':
+                datalist.append([tg.tag, tg.value])
+        return jsonify(action="DATA", data=datalist)
     return jsonify(action="ERROR",error="You need to set a password first to use this feature!")
 
 
@@ -231,9 +231,9 @@ def is_true():
     if getpassword:
         # --------------------
         if password != getpassword.value:
-            return jsonify(action="IS CORRECT",result=false)
+            return jsonify(action="IS CORRECT",result=False)
         # --------------------
-    return jsonify(action="IS CORRECT",result=true)
+    return jsonify(action="IS CORRECT",result=True)
         
 
 # -------------------------
@@ -256,9 +256,9 @@ def count_all():
 def is_locked():
     getpassword = TinyWebDB.query.filter_by(tag='dbpass').first()
     if getpassword:
-        return jsonify(action="IS LOCKED",result=true)
+        return jsonify(action="IS LOCKED",result=True)
     else:
-        return jsonify(action="IS LOCKED",result=false)
+        return jsonify(action="IS LOCKED",result=False)
         
 
 if __name__ == '__main__':
