@@ -38,13 +38,13 @@ def store_a_value():
     getpassword = TinyWebDB.query.filter_by(tag='dbpass').first()
     if tag:
         if tag == 'dbpass':
-            return jsonify(action="ERROR",error="Not possible to do any action to password record!")
+            return return_error('Not possible to do any action to password record!')
         else:
             # --------------------
             if getpassword:
                 password = request.form['pass']
                 if password != getpassword.value:
-                    return jsonify(action="ERROR",error="Wrong password!")
+                    return return_error('Wrong password!')
             # --------------------
             existing_tag = TinyWebDB.query.filter_by(tag=tag).first()
             if existing_tag:
@@ -55,7 +55,7 @@ def store_a_value():
                 db.session.add(data)
                 db.session.commit()
         return jsonify(action="STORED", tag=tag, value=value)
-    return jsonify(action="ERROR", error="Not found the tag.")
+    return return_error('Tag is not specified!')
 
 
 # -------------------------
@@ -68,17 +68,17 @@ def get_value():
     getpassword = TinyWebDB.query.filter_by(tag='dbpass').first()
     if tag:
         if tag == 'dbpass':
-            return jsonify(action="ERROR", error="Not possible to do any action to password record!")
+            return return_error('Not possible to do any action to password record!')
         else:
             # --------------------
             if getpassword:
                 password = request.form['pass']
                 if password != getpassword.value:
-                    return jsonify(action="ERROR",error="Wrong password!")
+                    return return_error('Wrong password!')
             # --------------------
             value = TinyWebDB.query.filter_by(tag=tag).first().value
             return jsonify(action="GOT", tag=tag, value=value)
-    return jsonify(action="ERROR",error="Not found the tag.")
+    return return_error('Not found the tag!')
 
 
 # -------------------------
@@ -92,17 +92,15 @@ def get_data():
         # --------------------
         password = request.form['pass']
         if password != getpassword.value:
-            return jsonify(action="ERROR",error="Wrong password!")
+            return return_error('Wrong password!')
         # --------------------
         tags = TinyWebDB.query.all()
-        taglist = []
-        valuelist = []
         datalist = []
         for tg in tags:
             if tg.tag != 'dbpass':
                 datalist.append([tg.tag, tg.value])
         return jsonify(action="DATA", data=datalist)
-    return jsonify(action="ERROR",error="You need to set a password first to use this feature!")
+    return return_error('You need to set a password first to use this feature!')
 
 
 # -------------------------
@@ -116,7 +114,7 @@ def get_all():
         # --------------------
         password = request.form['pass']
         if password != getpassword.value:
-            return jsonify(action="ERROR",error="Wrong password!")
+            return return_error('Wrong password!')
         # --------------------
     tags = TinyWebDB.query.all()
     taglist = []
@@ -136,19 +134,19 @@ def delete_entry():
     getpassword = TinyWebDB.query.filter_by(tag='dbpass').first()
     if tag:
         if tag == 'dbpass':
-            return jsonify(action="ERROR", error="Not possible to do any action to password record!")
+            return return_error('Not possible to do any action to password record!')
         else:
             # --------------------
             if getpassword:
                 password = request.form['pass']
                 if password != getpassword.value:
-                    return jsonify(action="ERROR",error="Wrong password!")
+                    return return_error('Wrong password!')
             # --------------------
             deleted = TinyWebDB.query.filter_by(tag=tag).first()
             db.session.delete(deleted)
             db.session.commit()
             return jsonify(action="DELETED", tag=tag)
-    return jsonify(action="ERROR",error="Not found the tag.")
+    return return_error('Not found the tag!')
 
 
 # -------------------------
@@ -162,7 +160,7 @@ def delete_all():
         # --------------------
         password = request.form['pass']
         if password != getpassword.value:
-            return jsonify(action="ERROR",error="Wrong password!")
+            return return_error('Wrong password!')
         # --------------------
     try:
         count = db.session.query(TinyWebDB).delete()
@@ -170,7 +168,7 @@ def delete_all():
         return jsonify(action="FORMATTED", count=count)
     except:
         db.session.rollback()
-        return jsonify(action="ERROR",error="Something went wrong while performing this action.")
+        return return_error('Something went wrong while performing this action.')
     
 
 
@@ -192,13 +190,13 @@ def set_key():
                 db.session.commit()
                 return jsonify(action="CHANGED PASSWORD", oldpassword=oldpassword, newpassword=newpassword)
             else:
-                return jsonify(action="ERROR",error="Wrong old password!")
+                return return_error('Wrong old password!')
         else:
             data = TinyWebDB(tag='dbpass', value=newpassword)
             db.session.add(data)
             db.session.commit()
             return jsonify(action="SET PASSWORD", oldpassword=oldpassword, newpassword=newpassword)
-    return jsonify(action="ERROR",error="No new password is specified!")
+    return return_error('No new password is specified!')
 
 
 # -------------------------
@@ -216,8 +214,8 @@ def remove_key():
             db.session.commit()
             return jsonify(action="DELETED PASSWORD", password=password)
         else:
-            return jsonify(action="ERROR",error="Wrong password!")
-    return jsonify(action="ERROR",error="You need to set a password first to use this feature!")
+        	return return_error('Wrong password!')
+    return return_error('You need to set a password first to use this feature!')
 
 
 # -------------------------
@@ -261,6 +259,25 @@ def is_locked():
         return jsonify(action="IS LOCKED",result=True)
     else:
         return jsonify(action="IS LOCKED",result=False)
+
+@app.errorhandler(405)
+def method_not_allowed(e):
+    return jsonify(action="ERROR",result="Method is not allowed!"), 405
+
+@app.errorhandler(404)
+def not_found(e):
+    return jsonify(action="ERROR",result="The requested URL was not found on the AsteroidDB instance!"), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    return jsonify(action="ERROR",result="Internal server error!"), 500
+
+# Returns error.
+def return_error(message):
+    response = jsonify(action="ERROR",result=message)
+    response.status_code = 400
+    return response
         
 
 if __name__ == '__main__':
