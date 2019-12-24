@@ -195,7 +195,7 @@ def set_key():
             data = TinyWebDB(tag='dbpass', value=newpassword)
             db.session.add(data)
             db.session.commit()
-            return jsonify(action="SET PASSWORD", oldpass=oldpassword, newpass=newpassword)
+            return jsonify(action="SET PASSWORD", newpass=newpassword)
     return return_error('No new password is specified!')
 
 
